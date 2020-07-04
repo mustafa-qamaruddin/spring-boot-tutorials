@@ -35,15 +35,15 @@ public class MultiplicationServiceImpl implements MultiplicationService {
     @Override
     public boolean checkAttempt(final MultiplicationResultAttempt resultAttempt) {
 
-        final Optional<User> user = userRepository.findByAlias(resultAttempt.getUser().getAlias());
+        final Optional<User> user = userRepository.findByAlias(resultAttempt.getUser().get(0).getAlias());
 
-        final boolean correct = resultAttempt.getResultAttempt() == resultAttempt.getMultiplication().getFactorA()
-                * resultAttempt.getMultiplication().getFactorB();
+        final boolean correct = resultAttempt.getResultAttempt() == resultAttempt.getMultiplication().get(0).getFactorA()
+                * resultAttempt.getMultiplication().get(0).getFactorB();
 
         Assert.isTrue(!resultAttempt.isCorrect(), "You can't send an attempt marked as correct");
 
         final MultiplicationResultAttempt checkedAttempt = new MultiplicationResultAttempt(
-                user.orElse(resultAttempt.getUser()), resultAttempt.getMultiplication(),
+                user.orElse(resultAttempt.getUser().get(0)), resultAttempt.getMultiplication().get(0),
                 resultAttempt.getResultAttempt(), correct);
 
         attemptRepository.save(checkedAttempt);

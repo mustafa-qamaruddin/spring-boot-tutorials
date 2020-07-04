@@ -31,7 +31,6 @@ public class MultiplicationResultAttemptControllerTest {
     private MockMvc mvc;
 
     private JacksonTester<MultiplicationResultAttempt> jsonResult;
-    private JacksonTester<MultiplicationResultAttempt> jsonResultAttempt;
     private JacksonTester<List<MultiplicationResultAttempt>> jsonResultAttemptList;
 
     
