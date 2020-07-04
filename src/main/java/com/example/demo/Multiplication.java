@@ -5,23 +5,25 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 
 
-@RequiredArgsConstructor
 @Getter
 @ToString
 @EqualsAndHashCode
-public class Multiplication {
+@RequiredArgsConstructor
+@Entity
+public final class Multiplication {
+
+    @Id
+    @GeneratedValue
+    @Column(name = "MULTIPLICATION_ID")
+    private Long id;
     
     private int factorA;
     private int factorB;
-
-    private int result;
-
-    public Multiplication(int factorA, int factorB) {
-        this.factorA = factorA;
-        this.factorB = factorB;
-        this.result = factorA * factorB;
-    }
-
+    
 }

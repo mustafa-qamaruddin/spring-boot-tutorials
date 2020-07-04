@@ -1,7 +1,7 @@
 package com.example.demo;
 
-
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.util.List;
@@ -10,7 +10,7 @@ import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-
+@SpringBootTest
 public class RandomGeneratorServiceImplTest {
 
     private RandomGeneratorServiceImpl randomGeneratorServiceImpl;
