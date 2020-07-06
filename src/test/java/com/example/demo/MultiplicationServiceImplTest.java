@@ -5,10 +5,16 @@ import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import java.util.Optional;
+
+import com.example.demo.event.EventDispatcher;
+import com.example.demo.event.MultiplicationSolvedEvent;
+
 import java.util.List;
 
 
@@ -25,13 +31,17 @@ public class MultiplicationServiceImplTest {
     @Mock
     private UserRepository userRepository;
 
+    @Mock
+    private EventDispatcher eventDispatcher;
+
     @BeforeEach
     public void setup() {
         MockitoAnnotations.initMocks(this);
         multiplicationServiceImpl = new MultiplicationServiceImpl(
             randomGeneratorService,
             attemptRepository,
-            userRepository
+            userRepository,
+            eventDispatcher
         );
     }
 
@@ -52,6 +62,9 @@ public class MultiplicationServiceImplTest {
         final MultiplicationResultAttempt attempt = new MultiplicationResultAttempt(user, multiplication, 3000, false);
         final MultiplicationResultAttempt verifiedAttempt = new MultiplicationResultAttempt(user, multiplication, 3000,
                 true);
+        MultiplicationSolvedEvent event = new MultiplicationSolvedEvent(
+            attempt.getId(), attempt.getUser().getId(), true
+        );
 
         given(userRepository.findByAlias("john_doe")).willReturn(Optional.empty());
 
@@ -59,6 +72,7 @@ public class MultiplicationServiceImplTest {
 
         assertThat(attemptResult).isTrue();
         verify(attemptRepository).save(verifiedAttempt);
+        verify(eventDispatcher).send(eq(event));
     }
 
     @Test
@@ -71,8 +85,15 @@ public class MultiplicationServiceImplTest {
 
         final boolean attemptResult = multiplicationServiceImpl.checkAttempt(attempt);
 
+        MultiplicationSolvedEvent event = new MultiplicationSolvedEvent(
+            attempt.getId(),
+            attempt.getUser().getId(),
+            false
+        );
+
         assertThat(attemptResult).isFalse();
         verify(attemptRepository).save(attempt);
+        verify(eventDispatcher).send(eq(event));
     }
 
     @Test

@@ -2,6 +2,10 @@ package com.example.demo;
 
 
 import javax.transaction.Transactional;
+
+import com.example.demo.event.EventDispatcher;
+import com.example.demo.event.MultiplicationSolvedEvent;
+
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,13 +19,16 @@ public class MultiplicationServiceImpl implements MultiplicationService {
     private final RandomGeneratorService randomGeneratorService;
     private final MultiplicationResultAttemptRepository attemptRepository;
     private final UserRepository userRepository;
+    private EventDispatcher eventDispatcher;
 
     @Autowired
     public MultiplicationServiceImpl(final RandomGeneratorService randomGeneratorService,
-            final MultiplicationResultAttemptRepository attemptRepository, final UserRepository userRepository) {
+            final MultiplicationResultAttemptRepository attemptRepository, final UserRepository userRepository,
+            final EventDispatcher eventDispatcher ) {
         this.randomGeneratorService = randomGeneratorService;
         this.attemptRepository = attemptRepository;
         this.userRepository = userRepository;
+        this.eventDispatcher = eventDispatcher;
     }
 
     @Override
@@ -47,6 +54,12 @@ public class MultiplicationServiceImpl implements MultiplicationService {
                 resultAttempt.getResultAttempt(), correct);
 
         attemptRepository.save(checkedAttempt);
+
+        eventDispatcher.send(
+            new MultiplicationSolvedEvent(
+                checkedAttempt.getId(), checkedAttempt.getUser().getId(), checkedAttempt.isCorrect()
+            )
+        );
 
         return correct;
     }
