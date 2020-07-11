@@ -17,7 +17,7 @@ public class EventDispatcher {
     @Autowired
     EventDispatcher(
         final RabbitTemplate rabbitTemplate,
-        @Value("${multiplication.exchange}") final String multiplicationString,
+        @Value("${multiplication.exchange}") final String multiplicationExchange,
         @Value("${multiplication.solved.key}") final String multiplicationSolvedRoutingKey
     ) {
         this.rabbitTemplate = rabbitTemplate;
@@ -27,8 +27,8 @@ public class EventDispatcher {
 
     public void send(final MultiplicationSolvedEvent multiplicationSolvedEvent) {
         rabbitTemplate.convertAndSend(
-            multiplicationExchange,
-            multiplicationSolvedRoutingKey,
+            this.multiplicationExchange,
+            this.multiplicationSolvedRoutingKey,
             multiplicationSolvedEvent
         );
     }

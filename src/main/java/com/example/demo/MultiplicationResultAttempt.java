@@ -8,10 +8,6 @@ import lombok.ToString;
 
 import javax.persistence.*;
 
-/**
- * Identifies the attempt from a {@link User} to solve a
- * {@link Multiplication}.
- */
 @RequiredArgsConstructor
 @Getter
 @ToString

@@ -10,9 +10,13 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
+
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.List;
 
 
+@Slf4j
 @Service
 public class MultiplicationServiceImpl implements MultiplicationService {
 
@@ -42,6 +46,8 @@ public class MultiplicationServiceImpl implements MultiplicationService {
     @Override
     public boolean checkAttempt(final MultiplicationResultAttempt resultAttempt) {
 
+        log.info("{}", resultAttempt);
+
         final Optional<User> user = userRepository.findByAlias(resultAttempt.getUser().getAlias());
 
         final boolean correct = resultAttempt.getResultAttempt() == resultAttempt.getMultiplication().getFactorA()
@@ -54,6 +60,11 @@ public class MultiplicationServiceImpl implements MultiplicationService {
                 resultAttempt.getResultAttempt(), correct);
 
         attemptRepository.save(checkedAttempt);
+
+        log.info(
+            "{} {} {}",
+            checkedAttempt.getId(), checkedAttempt.getUser().getId(), checkedAttempt.isCorrect()
+        );
 
         eventDispatcher.send(
             new MultiplicationSolvedEvent(
