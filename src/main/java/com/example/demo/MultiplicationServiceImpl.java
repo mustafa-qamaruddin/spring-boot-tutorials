@@ -23,7 +23,7 @@ public class MultiplicationServiceImpl implements MultiplicationService {
     private final RandomGeneratorService randomGeneratorService;
     private final MultiplicationResultAttemptRepository attemptRepository;
     private final UserRepository userRepository;
-    private EventDispatcher eventDispatcher;
+    private final EventDispatcher eventDispatcher;
 
     @Autowired
     public MultiplicationServiceImpl(final RandomGeneratorService randomGeneratorService,
@@ -82,6 +82,6 @@ public class MultiplicationServiceImpl implements MultiplicationService {
 
     @Override
     public MultiplicationResultAttempt getResultById(final Long resultId) {
-        return attemptRepository.findOne(resultId);
+        return attemptRepository.findById(resultId).orElse(null);
     }
 }
